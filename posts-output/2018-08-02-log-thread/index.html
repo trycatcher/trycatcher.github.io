@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Parnethetical advisory: Logging interim results in thread macros</title>
+    <link rel="canonical" href="http://abhikrk.org/posts-output/2018-08-02-log-thread/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//fonts.googleapis.com/css?family=Alegreya:400italic,700italic,400,700" rel="stylesheet"
+          type="text/css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/default.min.css">
+    <link href="/css/screen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Parnethetical advisory</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li ><a href="/">Home</a></li>
+                <li
+                ><a href="/archives/">Archives</a></li>
+                
+                <li
+                >
+                <a href="/pages-output/about/">About</a>
+                </li>
+                
+                <li><a href="/feed.xml">RSS</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div><!--/.container-fluid -->
+</nav>
+
+
+<div class="container">
+
+
+    <div class="row">
+        <div class="col-lg-9">
+            <div id="content">
+                
+<div id="post">
+    <div class="post-header">
+    <div id="post-meta" class="row">
+        <div class="col-lg-6">August 2, 2018</div>
+        
+    </div>
+    <h2>Logging interim results in thread macros</h2>
+</div>
+<div>
+    
+    <h3 id=""></h3><p>Thread macros are a familiar part of any Clojure codebase. They are a useful innovation  that contribute towards readability improvements over deeply nested code as well as a  visual idiom that have found home in other modern languages e.g.  <a href='https://github.com/chrismccord/elixir_express/blob/master/basics/06_pipeline_operator.md'>Elixir</a>.  When i started with Clojure, it took me a while to get used to them but now i have grown fond of them, enough to often sprinkle my code quite liberally with them.</p><p>Once my thread macro invocations started getting moderately complex, i ran into the  need to introspect intermediate results e.g. here's a dead-simple example that will be  used for illustration</p><pre><code>&#40;-&gt;&gt; &#91;1 2 3 4 5&#93;
+     &#40;filter odd?&#41;
+     &#40;sum&#41;&#41;
+
+&gt; 9 ;; sum of &#91;1 3 5&#93;
+</code></pre><p>Suppose we wanted to find out the value returned by Step 2 i.e. <code>&#40;filter odd?&#41;</code>.  Usually, we'd log it or def it. But what form does a logging capability look like when  used inside a threading macro context? At the very basic, we need a function that returns  the value it has been passed and as a side-effect, prints it to the output stream. A minimal  function for that might look like</p><pre><code>&#40;defn thread-log &#91;in&#93;
+  &#40;println in&#41;
+  in&#41;
+</code></pre><p>With this hand-rolled minimal logging function ready to be inserted at any point of a  thread macro invocation, we are ready to inspect any step of the overall computation  e.g.</p><pre><code>&#40;-&gt;&gt; &#91;1 2 3 4 5&#93;
+     &#40;filter odd?&#41;
+     &#40;thread-log&#41;
+     &#40;sum&#41;
+
+&gt; &#91;1 3 5&#93; ;; &#40;filter odd? &#91;1 2 3 4 5&#93;
+&gt; 9 ;; sum of &#91;1 3 5&#93;
+</code></pre><p>If you're using <a href='https://github.com/ptaoussanis/timbre'>timbre</a> for your logging needs,  it  already provides this out-of-the-box with it's  <a href='http://ptaoussanis.github.io/timbre/taoensso.timbre.html#var-spy'>log/spy</a> macro.  But as shown above, you can start off with the most prosaic function and add to that as  needed.</p>
+</div>
+
+<div id="post-tags">
+    <b>Tags: </b>
+    
+    <a href="/tags-output/clojure/">clojure</a>
+    
+</div>
+
+
+    <div id="prev-next">
+        
+        
+    </div>
+
+    
+
+
+</div>
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div id="sidebar">
+                <h3>Links</h3>
+                <ul id="links">
+                    <li><a href="http://cryogenweb.org/docs/home.html">Cryogen Docs</a></li>
+                    <li><a href="http://carmenla.me/blog/archives">Carmen's Blog</a></li>
+                    
+                </ul>
+                
+                <div id="recent">
+                    <h3>Recent Posts</h3>
+                    <ul>
+                        
+                        <li><a href="/posts-output/2018-08-02-log-thread/">Logging interim results in thread macros</a></li>
+                        
+                    </ul>
+                </div>
+                
+                
+                <div id="tags">
+                    <h3>Tags</h3>
+                    <ul>
+                        
+                        <li><a href="/tags-output/clojure/">clojure</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <footer>Copyright &copy; 2018 Abhik Khanra
+        <p style="text-align: center;">Powered by <a href="http://cryogenweb.org">Cryogen</a></p></footer>
+</div>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+</body>
+</html>

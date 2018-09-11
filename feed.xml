@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<rss version='2.0' xmlns:atom='http://www.w3.org/2005/Atom'>
+<channel>
+<atom:link href='http://abhikrk.org' rel='self' type='application/rss+xml'/>
+<title>
+Parnethetical advisory
+</title>
+<link>
+http://abhikrk.org
+</link>
+<description>
+It depends ..
+</description>
+<lastBuildDate>
+Tue, 11 Sep 2018 22:51:03 +0530
+</lastBuildDate>
+<generator>
+clj-rss
+</generator>
+<item>
+<guid>
+http://abhikrk.org/posts-output/2018-08-02-log-thread/
+</guid>
+<link>
+http://abhikrk.org/posts-output/2018-08-02-log-thread/
+</link>
+<title>
+Logging interim results in thread macros
+</title>
+<description>
+&lt;h3 id=&quot;&quot;&gt;&lt;/h3&gt;&lt;p&gt;Thread macros are a familiar part of any Clojure codebase. They are a useful innovation  that contribute towards readability improvements over deeply nested code as well as a  visual idiom that have found home in other modern languages e.g.  &lt;a href='https://github.com/chrismccord/elixir_express/blob/master/basics/06_pipeline_operator.md'&gt;Elixir&lt;/a&gt;.  When i started with Clojure, it took me a while to get used to them but now i have grown fond of them, enough to often sprinkle my code quite liberally with them.&lt;/p&gt;&lt;p&gt;Once my thread macro invocations started getting moderately complex, i ran into the  need to introspect intermediate results e.g. here's a dead-simple example that will be  used for illustration&lt;/p&gt;&lt;pre&gt;&lt;code&gt;&amp;#40;-&amp;gt;&amp;gt; &amp;#91;1 2 3 4 5&amp;#93;
+     &amp;#40;filter odd?&amp;#41;
+     &amp;#40;sum&amp;#41;&amp;#41;
+
+&amp;gt; 9 ;; sum of &amp;#91;1 3 5&amp;#93;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Suppose we wanted to find out the value returned by Step 2 i.e. &lt;code&gt;&amp;#40;filter odd?&amp;#41;&lt;/code&gt;.  Usually, we'd log it or def it. But what form does a logging capability look like when  used inside a threading macro context? At the very basic, we need a function that returns  the value it has been passed and as a side-effect, prints it to the output stream. A minimal  function for that might look like&lt;/p&gt;&lt;pre&gt;&lt;code&gt;&amp;#40;defn thread-log &amp;#91;in&amp;#93;
+  &amp;#40;println in&amp;#41;
+  in&amp;#41;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;With this hand-rolled minimal logging function ready to be inserted at any point of a  thread macro invocation, we are ready to inspect any step of the overall computation  e.g.&lt;/p&gt;&lt;pre&gt;&lt;code&gt;&amp;#40;-&amp;gt;&amp;gt; &amp;#91;1 2 3 4 5&amp;#93;
+     &amp;#40;filter odd?&amp;#41;
+     &amp;#40;thread-log&amp;#41;
+     &amp;#40;sum&amp;#41;
+
+&amp;gt; &amp;#91;1 3 5&amp;#93; ;; &amp;#40;filter odd? &amp;#91;1 2 3 4 5&amp;#93;
+&amp;gt; 9 ;; sum of &amp;#91;1 3 5&amp;#93;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you're using &lt;a href='https://github.com/ptaoussanis/timbre'&gt;timbre&lt;/a&gt; for your logging needs,  it  already provides this out-of-the-box with it's  &lt;a href='http://ptaoussanis.github.io/timbre/taoensso.timbre.html#var-spy'&gt;log/spy&lt;/a&gt; macro.  But as shown above, you can start off with the most prosaic function and add to that as  needed.&lt;/p&gt;
+</description>
+<pubDate>
+Thu, 02 Aug 2018 00:00:00 +0530
+</pubDate>
+</item>
+</channel>
+</rss>
